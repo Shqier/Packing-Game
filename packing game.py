@@ -102,16 +102,32 @@ class Campus(Item):
 
 def get_class(category):
     class_dict = {
-        'laptop': Laptop,
         'charger': UniversalCharger,
         'passport': Passport,
         'sunglasses': Sunglasses,
         'sneakers': Sneakers,
         'smartphone': Smartphone,
+        'laptop': Laptop,
         'smartwatch': Smartwatch,
         'campus': Campus
     }
     return class_dict.get(category.lower(), None)
+
+def get_category(item):
+    class_to_category = {
+        UniversalCharger: 'Charger',
+        Passport: 'Passport',
+        Sunglasses: 'Sunglasses',
+        Sneakers: 'Sneakers',
+        Smartphone: 'Smartphone',
+        Laptop: 'Laptop',
+        Smartwatch: 'Smartwatch',
+        Campus: 'Campus'
+    }
+    for class_type, category in class_to_category.items():
+        if isinstance(item, class_type):
+            return category
+    return "Unknown Category"
 
 
 class Bag:
@@ -138,14 +154,21 @@ class Bag:
     def print_all_items(self):
         i = 0
         for item in self.items:
-            print(item)
+            print(f"{i + 1}.{item}")
+            i+=1
 
 # CLI Item Entry
 print("Welcome to the Bag Packing Game!")
 bag = Bag()
 
 while True:
-    choice = input("Enter '1' to add an item, '2' to remove an item, '3' to print items from category, or '4' to quit: ")
+    choice = input("1-add an item\n"
+                   "2-print all items\n"
+                   "3-print items from category\n"
+                   "4-print all items by category\n"
+                   "5-remove an item\n"
+                   "q-quit\n"
+                   "Enter your choice: \n")
 
     if choice == '1':
         
@@ -229,11 +252,7 @@ while True:
     elif choice == '2':
         print("Printing all items in the bag:")
         bag.print_all_items()
-        item_index = int(input("Enter the index of the item to remove: "))
-        if item_index < len(bag.items):
-            bag.remove_item(bag.items[item_index])
-        else:
-            print("Invalid item index!")
+        
             
             
     elif choice == '3':
@@ -250,9 +269,33 @@ while True:
 
    
     elif choice == '4':
-        print("Exiting... Thank you for playing the Bag Packing Game!")
-        break
+        category_dict = {}
+
+        for item in bag.items:
+            category = get_category(item)
+            if category in category_dict:
+                category_dict[category].append(item)
+            else:
+                category_dict[category] = [item]
     
+        for category, items in category_dict.items():
+            print(f"Category: {category}")
+            for i, item in enumerate(items):
+                print(f"{i + 1}. {item}")
+            print("\n")
+        
+    elif choice == '5':
+        bag.print_all_items()
+        item_index = int(input("Enter the index of the item to remove: "))
+        if item_index <= len(bag.items):
+            bag.remove_item(bag.items[item_index - 1])
+        else:
+            print("Invalid item index!")
+    
+    elif choice == 'q':
+        print("Exiting the game.")
+        break
+            
     else:
         print("Invalid choice. Please try again.")
         
