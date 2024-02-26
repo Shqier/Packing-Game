@@ -100,6 +100,19 @@ class Campus(Item):
         return f"Campus - Name: {self.name}, Location: {self.location}, Courses: {', '.join(self.courses)}, Students: {self.students}, {super().__str__()}"
 
 
+def get_class(category):
+    class_dict = {
+        'laptop': Laptop,
+        'charger': UniversalCharger,
+        'passport': Passport,
+        'sunglasses': Sunglasses,
+        'sneakers': Sneakers,
+        'smartphone': Smartphone,
+        'smartwatch': Smartwatch,
+        'campus': Campus
+    }
+    return class_dict.get(category.lower(), None)
+
 
 class Bag:
     def __init__(self):
@@ -132,7 +145,7 @@ print("Welcome to the Bag Packing Game!")
 bag = Bag()
 
 while True:
-    choice = input("Enter '1' to add an item, '2' to remove an item, or '3' to quit: ")
+    choice = input("Enter '1' to add an item, '2' to remove an item, '3' to print items from category, or '4' to quit: ")
 
     if choice == '1':
         
@@ -221,8 +234,22 @@ while True:
             bag.remove_item(bag.items[item_index])
         else:
             print("Invalid item index!")
-
+            
+            
     elif choice == '3':
+        category = input("Enter the category to print items from: ")
+        
+        filtered_items = [item for item in bag.items if isinstance(item, get_class(category))]
+        
+        if filtered_items:
+            for i, item in enumerate(filtered_items):
+                print(f"{i + 1}. {item}")
+        else:
+            print("No items found in the specified category.")
+    
+
+   
+    elif choice == '4':
         print("Exiting... Thank you for playing the Bag Packing Game!")
         break
     
